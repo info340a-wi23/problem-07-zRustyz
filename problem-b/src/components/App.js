@@ -15,7 +15,7 @@ function App(props) {
     }
   })
 
-  function adoptPet(name) {
+  const adoptPet = (name) => {
     const newArr = list.map((pet) => {
       if (pet.name === name) {
         pet.adopted = true;

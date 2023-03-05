@@ -6,8 +6,30 @@ export default function GameDataTable(props) {
 
   //Your work goes here
 
+  const [sortByCriteria, updateSorting] = useState(null);
+  const [isAscending, updateOrder] = useState(null);
+
+  const handleClick = (event) => {
+    if (sortByCriteria !== event.currentTarget.name) {
+      updateSorting(event.currentTarget.name);
+      updateOrder(true);
+    } else {
+      if (isAscending) {
+        updateOrder(false);
+      } else {
+        updateSorting(null);
+        updateOrder(null);
+      }
+    }
+  }
+
+  var sortedArr = _.sortBy(props.data, sortByCriteria);
+   if (!isAscending && isAscending !== null) {
+     sortedArr = _.reverse(sortedArr);
+   }
+
   //convert data into rows
-  const rows = props.data.map((match) => {
+  const rows = sortedArr.map((match) => {
     return <GameDataRow key={match.year} game={match} />
   });
 
@@ -18,19 +40,19 @@ export default function GameDataTable(props) {
           <tr>
             <th>
               Year
-              <SortButton name="year" />
+              <SortButton name="year" onClick={handleClick} active={sortByCriteria === 'year'} ascending={isAscending && sortByCriteria === 'year'}/>
             </th>
             <th className="text-end">
               Winner
-              <SortButton name="winner" />
+              <SortButton name="winner" onClick={handleClick} active={sortByCriteria === 'winner'} ascending={isAscending && sortByCriteria === 'winner'}/>
             </th>
             <th className="text-center">
               Score
-              <SortButton name="score" />
+              <SortButton name="score" onClick={handleClick} active={sortByCriteria === 'score'} ascending={isAscending && sortByCriteria === 'score'}/>
             </th>
             <th>
               Runner-Up
-              <SortButton name="runner_up" />
+              <SortButton name="runner_up" onClick={handleClick} active={sortByCriteria === 'runner_up'} ascending={isAscending && sortByCriteria === 'runner_up'}/>
             </th>
           </tr>
         </thead>
@@ -43,7 +65,7 @@ export default function GameDataTable(props) {
 }
 
 //Component for managing display logic of sort button
-//Props: 
+//Props:
 //  `active` [boolean] if icon should be highlighted,
 //  `ascending` [boolean] if icon should be in ascending order (flipped)
 //  `onClick` [function] click handler (passthrough)
